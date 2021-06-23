@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+</head>
+<body style="background-color:snow;">
+    <%- include('./partials/dasbordtemp.ejs')%>
+    
+    <div  class="container box">
+      <div id="noti" style="display: none;" class="notification is-success">
+        <button  class="delete"></button>
+       Your request is received, <strong>Kindly wait till we verify your profile.</strong>
+      </div>
+    <form id="myForm" action="/agent_add" enctype="multipart/form-data" method="POST">
+  
+       <input type="hidden" name="id" value="<%= id %>">
+        <label class="label">Agent Name</label>
+         <div class="control has-icons-left has-icons-right">
+               <input class="input is-success" type="text" name="name" placeholder="Agent name" value="">
+    
+         </div>
+     <br>
+<label class="label">Profile pic</label>
+<input  type="file" name="photo">
+  
+  <label class="label">Description</label>
+  <textarea class="textarea" name="description" placeholder="e.g. Hello world"></textarea>
+  
+  <label class="label">Address</label>
+  <textarea class="textarea" name="address_value" placeholder=""></textarea>
+
+  <label class="label">Proof of address*</label>
+  <input  type="file" name="address">
+
+  <label class="label">Account number</label>
+  <input class="input is-success" type="number" name="account_number" placeholder="Agent name" value="">
+  
+  <label class="label">Ifsc code</label>
+  <input class="input is-success" type="text" name="ifsc" placeholder="Agent name" value="">
+      <label class="label">Proof of bank account*</label>
+      <input  type="file" name="bank">
+          <br>
+          <br>
+        
+        </form>
+        <button type="button" onclick="submit()" class="button is-primary is-light  is-rounded is-centered">Apply for agent</button>
+      </div>
+         
+   
+
+
+    <script>
+      function submit()
+      {
+     $('#myForm').submit();
+     document.getElementById("myForm").reset();
+      document.getElementById('noti').style.display='block'
+      }
+      
+      document.addEventListener('DOMContentLoaded', () => {
+  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+    const $notification = $delete.parentNode;
+
+    $delete.addEventListener('click', () => {
+      $notification.parentNode.removeChild($notification);
+    });
+  });
+});
+      </script>
+</body>
+
+</html>

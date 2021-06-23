@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        </style>
+    <title>Document</title>
+</head>
+<body onload=checkstatus()>
+    <%- include('./partials/dasbordtemp.ejs')%>
+    <nav class="box " style="position: fixed;width: 40%;left: 20%;top: 14%;" >
+    <h5 >Your unique id :</h5><h5 id="user_id"><%= id %></h5>
+</nav>
+<nav class="box" style="position: fixed;width:16%; height: 31%; left: 75%;top: 7%;" >
+<div  class="container"><img id="qr"  src=""/></div>
+</nav> 
+    <nav class="box" style="position: fixed;width: 40%;left: 20%;top: 24%;" >
+   <h3 id="te" style="color: red;display: none;position: fixed; left: 70%;top: 4%;"><ion-icon name="qr-code-sharp"></ion-icon>Loading qr..................</h3>
+  
+    <div>
+        <button style="color: green;" onclick=addnumber()>Add whatsapp</button>
+    </div>
+    <br>
+    <div id="add" style="display:none;">
+        <input  type="hidden" name="type" id="type" value="<%= type %>" >
+        <form action="/<%= id %>/<%= type %>/addnumber" method="POST">
+           
+            <input  type="hidden" name="id" id="id" value="<%= id %>" >
+        <label for="name">Nick name</label>
+        <input  type="text" name="name" id="name">
+        <label for="code">Country code</label>
+        <input  type="text" name="code" style="width: 25px;" id="code">
+        <label for="number">Number</label>
+        <input  type="number" name="number" id="number">
+        <input  type="hidden" name="status" id="status" value="No" >
+
+        <button style="color: RED;">Submit</button>
+       </form>
+    </div>
+</nav>
+    <nav class="box" style="position: fixed;width: 85%;left: 13%;top: 40%;" >
+    <div id="data" class="container">
+      
+    </div>
+    <br>
+</nav>
+
+
+<script>
+    function addnumber()
+    {
+      document.getElementById("add").style.display='block'  
+    }
+    function getdata(btn_id)
+    {   
+        document.getElementById("qr").src = "";
+document.getElementById("te").style.display='block';
+  
+   
+      
+        var data = { 
+            "textfield_id":"id"+btn_id,
+            "user_id":$(user_id).text(),
+                 "acc_id":document.getElementById("id"+btn_id).innerHTML
+                 
+                };
+        $.ajax({
+            type: 'post',
+            url: '/activate',
+            data: data,
+            dataType: 'text'
+        })
+        .done(function(data){
+           document.getElementById("qr").src = data;
+           document.getElementById("te").style.display='none';
+         
+           removeqr(document.getElementById("id"+btn_id).innerHTML);
+        });
+        
+    }
+
+function checkstatus()
+{   console.log(document.getElementById("user_id").innerText  )
+    var data = { 
+            "user_id":document.getElementById("user_id").innerText                            
+                };
+        $.ajax({
+            type: 'post',
+            url: '/getstatus',
+            data: data,
+            dataType: 'JSON'
+        })
+        .done(function(data){
+         console.log(data)  
+          
+          let div = document.getElementById('data');
+      div.innerHTML="";
+      let table = document.createElement('table');
+      table.className="table is-striped table is-bordered";
+   
+      let tr = document.createElement('tr');
+      table.appendChild(tr);
+      let th2 = document.createElement('th');
+      th2.innerText ="Account Name";
+      tr.appendChild(th2);
+      let th3 = document.createElement('th');
+      th3.innerText ="Account Number";
+      tr.appendChild(th3);
+      if(document.getElementById('type').value!="free") 
+{ 
+      let th4 = document.createElement('th');
+      th4.innerText ="Delete Account";
+      tr.appendChild(th4);
+}
+      let th5 = document.createElement('th');
+      th5.innerText ="Account Status";
+
+      tr.appendChild(th5);
+
+
+
+
+for(var i=0;i<data.length;i++)
+{
+    let tr = document.createElement('tr');
+    let hidden = document.createElement('td');
+    hidden.innerText =data[i]._id;
+    hidden.id="id"+i;
+    hidden.style.display= "none";
+    tr.appendChild(hidden);
+    
+    
+    let name = document.createElement('td');
+    name.innerText=data[i].name;
+    tr.appendChild(name);
+    
+  
+    let phone =document.createElement('td');
+    phone.innerText=data[i].code+"-"+data[i].number
+    tr.appendChild(phone);
+  console.log(document.getElementById('type').value)
+    if(document.getElementById('type').value=="free") 
+{ 
+    let td = document.createElement("td")
+    let del =document.createElement('button');
+        del.innerText="Delete";
+        del.id="d"+i;
+        del.style.backgroundColor="red";
+        del.setAttribute('onclick', "deletefn(this.id)");
+        td.appendChild(del);
+        tr.appendChild(td);
+
+    
+}
+        
+        
+        if(data[i].status=="No")
+    {
+        
+        let td1 = document.createElement("td")
+        let activ =document.createElement('button');
+        activ.innerText="Activate";
+        activ.style.backgroundColor="green";
+        activ.id=i
+        activ.setAttribute('onclick', "getdata(this.id)");
+        td1.appendChild(activ);
+        tr.appendChild(td1);
+    }
+    else
+    {
+        let act =document.createElement('td');
+    act.innerText="Account Activated ";
+    act.style.color="green";
+    tr.appendChild(act);
+    }
+    
+        
+   
+    table.appendChild(tr)
+    div.appendChild(table)
+       
+
+    
+}
+          
+         checkstatus();
+         
+        });
+    
+}
+
+function removeqr(id)
+{
+    clearInterval(check);
+  var check =  setInterval(()=>{
+     
+    var data = { 
+           
+            "user_id":$(user_id).text(),
+                 "acc_id":id
+                };
+        $.ajax({
+            type: 'post',
+            url: '/removeqr',
+            data: data,
+            dataType: 'text'
+        })
+        .done(function(data){
+            console.log(data==true);
+            if(data=="true")
+            {
+           document.getElementById("qr").src = "";
+           document.getElementById("te").style.display='none';
+         clearInterval(check);
+            }else
+            {
+                
+            }
+           
+        }); 
+  },1000);
+}
+
+function deletefn(data1)
+{
+    console.log("delete")
+    var data = { 
+           
+           "user_id":$(user_id).text(),
+                "acc_id":document.getElementById("id"+data1.split("d")[1]).innerHTML
+               };
+       $.ajax({
+           type: 'post',
+           url: '/deleteacc',
+           data: data,
+           dataType: 'text'
+       })
+       .done(function(data){
+           console.log(data);
+       });
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <%- include('./partials/nav.ejs')%>
+	<br>
+	<br>
+	
+	<br>
+	<br>
+	<br>
+	<div class="container is-max-desktop">
+		<form action="/quotes" method="POST" class="notification is-primary">
+		<h3 class="title" style="text-align: center;color: brown;">SIGN-UP</h3>
+		  <div class="field">
+			<label class="label">Name</label>
+			<div class="control">
+			  <input class="input" name="User" type="text" placeholder="e.g Alex Smith">
+			</div>
+		  </div>
+		  
+		  <div class="field">
+			<label class="label">Email</label>
+			<div class="control">
+			  <input class="input" name="email" type="email" placeholder="e.g. alexsmith@gmail.com">
+			</div>
+		  </div>
+		  <div class="field">
+			<label class="label">Contact</label>
+			<div class="control">
+			  <input class="input" name="number" type="tel" placeholder="e.g. 9193********">
+			</div>
+		  </div>
+		  <div class="field">
+			<label class="label">Password</label>
+			<div class="control">
+			  <input class="input" name="pass" type="password" placeholder="e.g. **********">
+			</div>
+		  </div>
+		  <button class="button is-danger" >Sign-up</button>
+		</form>
+	  </div>
+	
+   
+</body>
+</html>

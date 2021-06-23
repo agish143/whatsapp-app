@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+      <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+      <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+
+    <title>Document</title>
+</head>
+<body>
+      <%- include('./partials/dasbordtemp.ejs')%>
+      <nav class="box container"  >
+        <p>To set default bot reply ,type <code>default</code> in request field</p>
+      </nav>
+      <input type="hidden" id="user_id" value="<%= id %>">
+      <nav class="box container" >
+      <form action="/<%= id %>/updatebot"  method="post">
+      <input type="hidden" name="clientid" value="<%= id %>">
+      <label for="request">Enter the request you want to respond</label>
+      <textarea style="border: rgb(4, 9, 14);outline-width: 3cm;width: 100%;height: 100px;" class="textarea is-primary" name="request" id="request" cols="30" rows="100" placeholder="enter the request here"></textarea>
+      <label for="response">Enter Response</label>
+      <textarea style="border: rgb(4, 9, 14);outline-width: 3cm;width: 100%;height: 100px;" class="textarea is-primary" name="response" id="response" cols="30" rows="100" placeholder="Response here...."></textarea>
+    <br>
+    <button style="width: 100%;" class="button is-primary is-outlined">Add responses</button>
+    
+  </form>
+ 
+   </nav>
+   <nav class="box container"  > 
+   <table class=" table is-striped table is-bordered" style="border: 2cm;width:100%;">
+    <thead >
+      <tr style="background-color:gray;color: black">
+          
+          <th style="text-align: center;">Input request </th>
+          <th style="text-align: center;">Output response</th>
+          <th style="text-align: center;"></th>
+      </tr>
+    </thead>
+    <tbody style="text-align: center;">
+      <% for(var i=0;i<data.length;i++){if((data[i].request!="")&&(data[i].response!="")){ %> 
+        
+        <tr>
+          
+          <td style="text-align: center;"><%= data[i].request %> </td>
+       
+          <td style="text-align: center;"><%= data[i].response %></td>
+          <td style="text-align: center;"><button id="<%= data[i]['_id']  %> " onclick="del_bot(this.id)" class="button is-danger is-outlined">Delete</button></td>
+        
+        </tr>
+      <%} } %> 
+    </tbody>
+   </table>
+  </nav>
+   <script type="text/javascript" src="js/materialize.min.js"></script>
+   <script>
+     function del_bot(id)
+     {var user_id = document.getElementById("user_id").value;
+    console.log(id);
+        $.ajax({
+            type: 'post',
+            url: '/'+user_id+'/deletebot',
+            data: {id:id},
+            dataType: 'text'
+        })
+        .done(function(data){
+ console.log("done");location.reload();
+        });
+     }
+   </script>
+</body>
+</html>

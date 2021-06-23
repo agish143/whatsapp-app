@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <title>Document</title>
+    <style>
+      input[type=text], select {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      
+      input[type=submit] {
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      input[type=submit]:hover {
+        background-color: #45a049;
+      }
+      
+      .d {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+      }
+      input[type=button] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    width: 120px;
+}.chip {
+  display: inline-block;
+  padding: 0 25px;
+  height: 50px;
+  font-size: 16px;
+  line-height: 50px;
+  border-radius: 25px;
+  background-color: #f1f1f1;
+}
+
+.chip img {
+  float: left;
+  margin: 0 10px 0 -25px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+.dropdown-check-list {
+  float: right;
+
+
+}
+
+.dropdown-check-list .anchor {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 50px 5px 10px;
+  border: 1px solid #ccc;
+}
+
+.dropdown-check-list .anchor:after {
+  position: absolute;
+  content: "";
+  border-left: 2px solid black;
+  border-top: 2px solid black;
+  padding: 5px;
+  right: 10px;
+  top: 20%;
+  -moz-transform: rotate(-135deg);
+  -ms-transform: rotate(-135deg);
+  -o-transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+}
+
+.dropdown-check-list .anchor:active:after {
+  right: 8px;
+  top: 21%;
+}
+
+.dropdown-check-list ul.items {
+  padding: 2px;
+  display: none;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.dropdown-check-list ul.items li {
+  list-style: none;
+}
+
+.dropdown-check-list.visible .anchor {
+  color: #0094ff;
+}
+
+.dropdown-check-list.visible .items {
+  display: block;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+      </style>
+</head>
+<body onload='update_dropdown()'>
+  
+      <%- include('./partials/dasbordtemp.ejs')%>
+      <nav class="box container"  >
+        <div id="noti" style="display: none;" class="notification is-success">
+          <button  class="delete"></button>
+         Campaign started successfully, To <strong>view </strong> go to <a href="/<%= id %>/report"> reports</a>
+        </div>
+      <div class="chip">
+        Sent Messages : 0
+      </div>
+      <div id="credit" class="chip">
+       Credits available : 0
+      </div>
+      <div id="total_acc" class="chip">
+         Accounts Added  : 0
+        </div>
+      <div id="activ_acc" class="chip">
+      No. of active accounts  : 0
+      </div>
+      </nav>
+      <nav class="box container"  >
+      <h5 style="color: green;" >Upload Excell files</h5>
+      <input type="file" id="input" />
+      
+      <h5 id="demo" style="color: red;" hidden>Uploading please wait .....</h5>
+   
+      </nav>
+      
+      <nav class="box container" >
+        <div class="d">
+        
+          <div id="list1" name="acc" class="dropdown-check-list" style="width: 100%;" tabindex="100">
+            <span class="anchor" name="acc" style="color: green;width: 100%;">Select Accounts</span>
+            <ul id="items" class="items">
+             
+             
+            </ul>
+          </div>
+        
+        
+    <form  id="formId" action="/send" method="POST" >
+      <input type="hidden" name="acc_i" id="acc_i" value="">
+      <input type="hidden"  id="user-id" name="user-id"  value=<%= id %>>  
+      <label for="campaign">Campaign Name</label>
+    <input type="text" name="campaign" id="campaign">
+    <br>
+      <label for="number">Enter the number</label>
+    <textarea  style="border: rgb(4, 9, 14);outline-width: 3cm;width: 100%;height: 100px;" class="new" name="num" id="number" cols="30" rows="100" placeholder="enter the numbers here"></textarea>
+    <label for="mess">Enter Messager</label>
+    <textarea style="border: rgb(4, 9, 14);outline-width: 3cm;width: 100%;height: 100px;" class="new" name="mess" id="mess" cols="30" rows="100" placeholder="Content here...."></textarea>
+   <br>
+   
+   <h5 class="delay" style="color: red;" >Set delay orelse your account is at risk to get blocked</h5>
+    <label class="delay" for="delay">Enter Delay (sec)
+     
+    </label>
+    <input class="delay" type="number" id="delay" name="buffertime">
+
+    <h5 class="delay" style="color: green;" >Set batch delay to be in safezone</h5>
+    <label class="delay" for="batch">Enter number of msg to batch (sec)</label>
+    <input  class="delay" id="batch" type="number" name="delaygrouptotal">
+    <label  class="delay" for="batchdelay">batch delay (sec)</label>
+    <input  class="delay" id="batchdelay" type="number" name="groupdelaytime">
+  
+  
+</form>
+<input type="button"  onclick="submit_form()" value="send" >
+</div>
+</nav>
+<br><br><br><br><br><br>
+<script src="https://unpkg.com/read-excel-file@4.x/bundle/read-excel-file.min.js"></script>
+
+<script>
+  var val="";
+  var input = document.getElementById('input')
+  input.addEventListener('change',async function() {
+    document.getElementById('demo').hidden=false;
+    readXlsxFile(input.files[0]).then(async function(rows) {
+      // `rows` is an array of rows
+      // each row being an array of cells.
+     var t= rows.shift();
+     console.log(t)
+    rows.forEach(row => {
+      val = val + row[0] +" `$` "+row[1]+" `$` "+row[2]+" `$` "+row[3]+",";
+    });
+    document.getElementById('demo').hidden=true;
+    document.getElementById('number').value=val;
+      hide('block');
+    })
+  })
+  function hide(value)
+    {
+      var elem =document.getElementsByClassName("delay");
+      console.log(elem)
+      for(var i=0;i<elem.length;i++)
+      {
+        elem[i].style.display=value;
+      }
+    }
+
+    var number = document.getElementById('number');
+    number.addEventListener('change',()=>{hide("block")});
+
+    var checkList = document.getElementById('list1');
+checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
+  if (checkList.classList.contains('visible'))
+    checkList.classList.remove('visible');
+  else
+    checkList.classList.add('visible');
+}
+function update_dropdown()
+{
+  credit();
+  console.log(document.getElementById("user-id").value);
+hide("none");
+  var data = { 
+            "user_id":document.getElementById("user-id").value                       
+                };
+        $.ajax({
+            type: 'post',
+            url: '/getstatus',
+            data: data,
+            dataType: 'JSON'
+        })
+        .done(function(data){
+          console.log(data)
+          document.getElementById("total_acc").innerText=" Accounts Added : "+data.length;
+          let active=0;
+          var item =document.getElementById("items");
+          for(var i=0;i<data.length;i++)
+          {console.log(data[i].status)
+            if(data[i].status=="Yes")
+            {
+              active++;
+              var li =document.createElement("li");
+              
+              var checkbox =document.createElement("input");
+              checkbox.type="checkbox";
+              checkbox.id=data[i]._id; 
+              checkbox.className="acc"
+               checkbox.value=data[i]._id;
+              li.innerText=data[i].name
+              li.appendChild(checkbox);
+              
+              item.appendChild(li);
+            }
+          }
+          document.getElementById("activ_acc").innerText="No. of active accounts : "+active;
+        });
+       
+}
+async function submit_form()
+{
+  var acc_sel=[];
+ 
+  var acc = document.getElementsByClassName('acc');
+  console.log(acc)
+  for(var i=0;i<acc.length;i++)
+  {
+    if(acc[i].checked)
+    {
+   
+      acc_sel.push(acc[i].value)
+    }
+  }
+  document.getElementById('acc_i').value=acc_sel;
+  $("#formId").submit();
+}
+function credit()
+{
+  $.ajax({
+            type: 'post',
+            url: '/getcreditstatus',
+            data: {
+              id:document.getElementById("user-id").value
+            },
+            dataType: 'JSON'
+        })
+        .done(function(data){
+          document.getElementById("credit").innerText=" Credits available : "+data;
+        });
+}
+function sleep(millis) {
+    return new Promise(resolve => setTimeout(resolve, millis));
+}
+document.addEventListener('DOMContentLoaded', () => {
+  (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+    const $notification = $delete.parentNode;
+
+    $delete.addEventListener('click', () => {
+      $notification.parentNode.hide()
+    });
+  });
+});
+</script>
+
+</body>
+</html>
+

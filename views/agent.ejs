@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <%- include('./partials/dasbordtemp.ejs')%>
+    <nav class="box container"  >
+        <p>Earn now becoming a milkywaay agent ,<a href="/<%= id %>/add_agent">click here</a> to be an agent</p>
+      </nav>
+    
+      <div class="container">
+        <div class="tabs is-centered is-boxed">
+          <ul>
+            <li class="is-active">
+              <a>
+                <span class="icon is-small"><i class="fas fa-image" aria-hidden="true"></i></span>
+                <span>Available agents</span>
+              </a>
+            </li>
+            <li >
+              <a>
+                <span class="icon is-small"></i></span>
+                <span >My agents</span>
+              </a>
+            </li>
+         
+          </ul>
+        </div>
+        <div id="agents_container">
+<% for(var i=0;i<data.length;++i){ %>        
+
+
+      <div class="card-content container box">
+        <div class="media ">
+          <div class="media-left">
+            <figure class="image is-48x48">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfGtrAgOIg4722RdOT1PRNtcq0fXIjIzlPqQ&usqp=CAU" alt="image">
+            </figure>
+          </div>
+          <div class="media-content">
+            <p class="title is-4"><%= data[i].name%></p>
+            <p class="subtitle is-6">@<%= data[i]._id%></p>
+          </div>
+        </div>
+    
+        <div class="content">
+          <%= data[i].description%>
+         
+        </div>
+        <button class="button is-success is-light ">Activate</button>
+      </div>
+     
+     <% } %> 
+      
+    </div>
+
+
+
+    <div id="agents_container">
+      <div class="card-content container box">
+        <div class="media ">
+          <div class="media-left">
+            <figure class="image is-48x48">
+              <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+            </figure>
+          </div>
+          <div class="media-content">
+            <p class="title is-4">John Smith</p>
+            <p class="subtitle is-6">@72772836</p>
+          </div>
+        </div>
+    
+        <div class="content">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Phasellus nec iaculis mauris. 
+         
+         
+        </div>
+        <button class="button is-success is-light ">Activate</button>
+      </div>
+    </div>
+      <script>
+         $(document).on('click','ul li',function(){
+          $(this).addClass('is-active').siblings().removeClass('is-active');
+          var index =$(this).index();
+        var tab = document.querySelectorAll('#agents_container');
+        tab.forEach(node=>{
+        node.style.display = 'none';
+         })
+    tab[index].style.display='block'
+        })
+      </script>
+</body>
+</html>

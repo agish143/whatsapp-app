@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script id="bolt" src="https://checkout-static.citruspay.com/bolt/run/bolt.min.js" bolt- color="e34524"
+    bolt-logo="http://boltiswatching.com/wp-content/uploads/2015/09/Bolt-Logo-e14421724859591.png"></script>
+
+  <style>
+    @charset "UTF-8";
+
+    /*
+ * Developer: Alireza Eskandarpour Shoferi
+ * Designer: Wouter de Bres (dribbble.com/wdeb)
+ *
+ * Distributed under the terms of the MIT license
+ * https://opensource.org/licenses/MIT
+ */
+    .wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -190px 0 0 -468px;
+      font-family: "Open Sans", sans-serif;
+      font-weight: 400;
+      color: #9f9f9f;
+      font-size: 15px;
+    }
+
+    .package {
+      box-sizing: border-box;
+      width: 301px;
+      height: 600px;
+      border: 3px solid #e8e8e8;
+      border-radius: 7px;
+      display: inline-block;
+      padding: 24px;
+      text-align: center;
+      float: left;
+      transition: margin-top 0.5s linear;
+      position: relative;
+      margin-right: 11px;
+    }
+
+    .package:hover {
+      margin-top: -30px;
+      transition: margin-top 0.3s linear;
+    }
+
+    .name {
+      color: #565656;
+      font-weight: 300;
+      font-size: 3rem;
+      margin-top: -5px;
+    }
+
+    .price {
+      margin-top: 7px;
+      color: red;
+      font-weight: bold;
+    }
+
+
+    hr {
+      background-color: #dedede;
+      border: none;
+      height: 1px;
+    }
+
+    .trial {
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 2px 21px 2px 21px;
+      color: #33c4b6;
+      border: 1px solid #e4e4e4;
+      display: inline-block;
+      border-radius: 15px;
+      background-color: white;
+      position: relative;
+      bottom: -20px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+      margin-top: 29px;
+    }
+
+    li {
+      margin-bottom: 15px;
+    }
+
+    li:before {
+      font-size: 1.3rem;
+      color: #33c4b6;
+      margin-right: 3px;
+    }
+
+    .checkIcon,
+    .brilliant::after,
+    li:before {
+      font-family: "FontAwesome";
+      content: "";
+    }
+
+    .brilliant {
+      border-color: #33c4b6;
+    }
+
+    .brilliant::before {
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 64px 64px 0 0;
+      border-color: #3bc6b8 transparent transparent transparent;
+      position: absolute;
+      left: 0;
+      top: 0;
+      content: "";
+    }
+
+    .brilliant::after {
+      color: white;
+      position: absolute;
+      left: 9px;
+      top: 6px;
+      text-shadow: 0 0 2px #37c5b6;
+      font-size: 1.4rem;
+    }
+
+    .select {
+      font-size: 0.9rem;
+      font-weight: 900;
+      padding: 2px 21px 2px 21px;
+      color: red;
+      border: 1px solid #e4e4e4;
+      display: inline-block;
+      border-radius: 15px;
+      background-color: white;
+      position: relative;
+      font-size: 20px;
+    }
+
+    .select:hover {
+      background-color: #1bbc9d;
+      color: #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('./partials/dasbordtemp.ejs')%>
+
+
+    <input type="hidden" id="cust_id" value="<%= id %>" name="cust_id">
+    <nav class="box" style="position: fixed;width: 85%;left: 13%;top: 15%;">
+      <div class='package'>
+        <div class='name'>Free</div>
+        <div class='price'>₹0</div>
+        <div class='trial'>100 messages / day</div>
+        <hr>
+        <ul>
+
+          <li>
+            <strong>100</strong>
+            messages /day
+          </li>
+          <li>
+            <strong>Unlimited</strong>
+            whatsapp numbers
+          </li>
+
+          <li>
+            <strong>Milkywaay</strong>
+            Signature
+          </li>
+          <li>
+            <strong> Reports</strong>
+
+          </li>
+          <li>
+            <strong>Auto Reply Bot</strong>
+
+          </li>
+          <li>
+            <strong>Multimedia</strong>
+            messages
+          </li>
+
+          <li>
+            <strong>Multi language</strong>
+            messages
+          </li>
+          <li>
+            <strong>Delay</strong>
+            between messages
+          </li>
+        </ul>
+        <br><br>
+        <button onclick="location.href = '/<%= id%>/dashboard';" class="button is-primary">Try for free</button>
+      </div>
+      <div class='package'>
+        <div class='name'>Basic</div>
+        <div class='price'>₹2999</div>
+        <div class='trial'>Lifetime access</div>
+        <hr>
+        <ul>
+          <li>
+            <strong>10000</strong>
+            Message credits
+          </li>
+          <li>
+            <strong>Unlimited</strong>
+            whatsapp numbers
+          </li>
+          <li>
+            <strong>No</strong>
+            Milkywaay Signature
+          </li>
+          <li>
+            <strong> Reports</strong>
+
+          </li>
+          <li>
+            <strong>Auto Reply Bot</strong>
+
+          </li>
+          <li>
+            <strong>Multimedia</strong>
+            messages
+          </li>
+
+          <li>
+            <strong>Multi language</strong>
+            messages
+          </li>
+          <li>
+            <strong>Delay</strong>
+            between messages
+          </li>
+          <li>
+            <strong>24/7</strong>
+            Email support
+          </li>
+        </ul>
+        <br>
+        <button class="button is-primary" onclick="hc(1,'basic')">Buy</button>
+      </div>
+      <div class='package'>
+        <div class='name'>Start up</div>
+        <div class='price'>₹9999</div>
+        <div class='trial'>Lifetime access</div>
+        <hr>
+        <ul>
+          <li>
+            <strong>50000</strong>
+            Message credits
+          </li>
+          <li>
+            <strong>Unlimited</strong>
+            whatsapp numbers
+          </li>
+          <li>
+            <strong>No</strong>
+            Milkywaay Signature
+          </li>
+          <li>
+            <strong> Reports</strong>
+
+          </li>
+          <li>
+            <strong>Auto Reply Bot</strong>
+
+          </li>
+          <li>
+            <strong>Multimedia</strong>
+            messages
+          </li>
+
+          <li>
+            <strong>Multi language</strong>
+            messages
+          </li>
+          <li>
+            <strong>Delay</strong>
+            between messages
+          </li>
+          <li>
+            <strong>24/7</strong>
+            whatsapp support
+          </li>
+        </ul>
+        <br>
+        <button class="button is-primary" onclick="hc(2,'startup')">Buy</button>
+      </div>
+      <div class='package'>
+        <div class='name'>Enterprise</div>
+        <div class='price'>₹29999</div>
+        <div class='trial'>Lifetime access</div>
+        <hr>
+        <ul>
+          <li>
+            <strong>300000</strong>
+            Message credits
+          </li>
+          <li>
+            <strong>Unlimited</strong>
+            whatsapp numbers
+          </li>
+          <li>
+            <strong>No</strong>
+            Milkywaay Signature
+          </li>
+          <li>
+            <strong> Reports</strong>
+
+          </li>
+          <li>
+            <strong>Auto Reply Bot</strong>
+
+          </li>
+          <li>
+            <strong>Multimedia</strong>
+            messages
+          </li>
+
+          <li>
+            <strong>Multi language</strong>
+            messages
+          </li>
+          <li>
+            <strong>Delay</strong>
+            between messages
+          </li>
+          <li>
+            <strong>24/7</strong>
+            whatsapp support
+          </li>
+          <li>
+            <strong>Customer support</strong>
+
+          </li>
+        </ul>
+        <button class="button is-primary" onclick="hc(3,'enterprise')">Buy</button>
+      </div>
+
+    </nav>
+    <script type="text/javascript">
+      function hc1() {
+        console.log("running")
+      }
+      function hc(val, product) {
+        console.log("running")
+        $.ajax({
+          url: '/pay',
+          type: 'post',
+          data: {
+            id: document.getElementById('cust_id').value,
+            pinfo: product,
+            amount: val
+          },
+
+          dataType: 'text',
+          success: function (value1) {
+            var value = JSON.parse(value1)
+            console.log(value)
+            bolt.launch({
+              key: value.key,
+              txnid: value.ord,
+              hash: value.hash,
+              amount: value.amount,
+              firstname: value.user,
+              email: value.email,
+              phone: value.phone,
+              productinfo: value.pinfo,
+              udf5: value.id,
+              surl: "http://localhost:3000/response.html",
+              furl: "http://localhost:3000/response.html"
+            }, {
+              responseHandler: function (BOLT) {
+                console.log(BOLT.response.txnStatus);
+                if (BOLT.response.txnStatus != 'CANCEL') {
+                  //Salt is passd here for demo purpose only. For practical use keep salt at server side only.
+                  var fr = '<form action=\"' + 'http://localhost:3000/response' + '\" method=\"post\">' +
+                    '<input type=\"hidden\" name=\"key\" value=\"' + BOLT.response.key + '\" />' +
+                    '<input type=\"hidden\" name=\"txnid\" value=\"' + BOLT.response.txnid + '\" />' +
+                    '<input type=\"hidden\" name=\"amount\" value=\"' + BOLT.response.amount + '\" />' +
+                    '<input type=\"hidden\" name=\"productinfo\" value=\"' + BOLT.response.productinfo + '\" />' +
+                    '<input type=\"hidden\" name=\"firstname\" value=\"' + BOLT.response.firstname + '\" />' +
+                    '<input type=\"hidden\" name=\"email\" value=\"' + BOLT.response.email + '\" />' +
+                    '<input type=\"hidden\" name=\"udf5\" value=\"' + BOLT.response.udf5 + '\" />' +
+                    '<input type=\"hidden\" name=\"mihpayid\" value=\"' + BOLT.response.mihpayid + '\" />' +
+                    '<input type=\"hidden\" name=\"status\" value=\"' + BOLT.response.status + '\" />' +
+                    '<input type=\"hidden\" name=\"hash\" value=\"' + BOLT.response.hash + '\" />' +
+                    '</form>';
+                  var form = jQuery(fr);
+                  jQuery('body').append(form);
+                  form.submit();
+                }
+              },
+              catchException: function (BOLT) {
+                alert(BOLT.message);
+              }
+            });
+          }
+        });
+      }
+
+    </script>
+    <script type="text/javascript">
+      function launchBOLT(num) {
+
+      }
+
+    </script>
+
+</body>
+
+</html>

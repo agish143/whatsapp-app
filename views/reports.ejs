@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+     <title>Document</title>
+     <style>
+         .dropdown-check-list {
+  float: right;
+
+
+}
+
+.dropdown-check-list .anchor {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 50px 5px 10px;
+  border: 1px solid #ccc;
+}
+
+.dropdown-check-list .anchor:after {
+  position: absolute;
+  content: "";
+  border-left: 2px solid black;
+  border-top: 2px solid black;
+  padding: 5px;
+  right: 10px;
+  top: 20%;
+  -moz-transform: rotate(-135deg);
+  -ms-transform: rotate(-135deg);
+  -o-transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+}
+
+.dropdown-check-list .anchor:active:after {
+  right: 8px;
+  top: 21%;
+}
+
+.dropdown-check-list ul.campaign {
+  padding: 2px;
+  display: none;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.dropdown-check-list ul.campaign li {
+  list-style: none;
+  
+}
+
+.dropdown-check-list.visible .anchor {
+  color: #0094ff;
+}
+
+.dropdown-check-list.visible .campaign {
+  display: block;
+}
+     </style>
+</head>
+<body onload='update_dropdown()'>
+      <%- include('./partials/dasbordtemp.ejs')%>
+      <div class="container box">
+      <input type="text" id="campaign_name" value="" readonly>
+      <input type="hidden"  id="user-id" name="user-id"  value=<%= id %>> 
+      <div id="list1" name="acc" class="dropdown-check-list" tabindex="100">
+        <span class="anchor" name="acc" style="color: green;">Select Campaign</span>
+        <ul id="campaign" class="campaign">
+         
+         
+        </ul>
+      </div>
+    </div>
+      <table class="table box container">
+        <thead>
+          <tr>
+            <th><abbr title="p">Pos</abbr></th>
+            <th>Campaign name</th>
+            <th><abbr title="sent-to">sent-to</abbr></th>
+            <th><abbr title="Timestamp">Timestamp</abbr></th>
+            <th><abbr title="status">Status</abbr></th>
+            
+          </tr>
+        </thead>
+        <tbody>
+         
+          
+            <% for(var i=0;i<data.length;i++){ %> 
+              <tr>
+              <th><%= i+1%></th>
+              <th><%= data[i].campaign  %> </th>
+              <th><%= data[i].sendto  %> </th>
+              <th><%= data[i].time.toString().split("GMT")[0]  %> </th>
+              <% if( data[i].status =="OK") {%> 
+              <th style="color:  green;">Msg send</th>
+              <% } %> 
+            
+              </tr>
+              <% } %> 
+            </tbody>
+      </table>
+  
+        
+      
+<script>
+
+    //get campaign list
+    function update_dropdown()
+{
+ 
+  console.log(document.getElementById("user-id").value);
+
+  var data = { 
+            "user_id":document.getElementById("user-id").value                       
+                };
+        $.ajax({
+            type: 'post',
+            url: '/getcampaign',
+            data: data,
+            dataType: 'JSON'
+        })
+        .done(function(data_received){
+            const list=[];
+            data_received.forEach(data => {
+                list.push(data.campaign);
+            });
+
+
+         
+          var data=remove_duplicate(list);
+          console.log(data)
+          var item =document.getElementById("campaign");
+          for(var i=0;i<data.length;i++)
+          {
+if(data[i]!==undefined )
+
+                {
+                    var li =document.createElement("li");
+              
+              li.innerText=data[i]
+              item.appendChild(li); 
+              
+                 
+            }
+             
+            
+          }
+          
+
+        });
+       
+}
+
+
+//dropdown
+var checkList = document.getElementById('list1');
+checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
+  if (checkList.classList.contains('visible'))
+    checkList.classList.remove('visible');
+  else
+    checkList.classList.add('visible');
+}
+
+//removes duplicates
+function remove_duplicate(data)
+{
+return data.filter((value,index)=>data.indexOf(value)===index)
+}
+function save (data)
+{
+    document.getElementById("campaign_name").value=data;
+}
+
+</script>
+</body>
+</html>
