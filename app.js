@@ -127,7 +127,7 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
                 .catch(error => console.log("error"))
               // /res.redirect('/'+req.params.id+'/dashboard');
             }
-const a;
+
           },
           { headless: true, useChrome: false })
         } catch (e) {
