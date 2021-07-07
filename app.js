@@ -89,7 +89,7 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
         .catch(error => console.error(error))
     })
 
-    app.post('/activate', async(req, res) => {
+    app.post('/activate', async (req, res) => {
       console.log(req.body);
       req.session.count = 0;
       console.log("1st check")
@@ -118,7 +118,7 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
             //return isLogged || notLogged || browserClose || qrReadSuccess || qrReadFail || autocloseCalled || desconnectedMobile || deleteToken || chatsAvailable || deviceNotConnected || serverWssNotConnected || noOpenBrowser
             //Create session wss return "serverClose" case server for close
             if (statusSession == "qrReadSuccess" && statusSession != "browserClose") {
-             
+
               account_db.findOneAndUpdate({ _id: new ObjectID(req.body.acc_id) }, { $set: { status: "Yes" } }, { upsert: true })
                 .then(result => {
                   console.log(result);
@@ -129,19 +129,21 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
             }
 
           },
-          { headless: true, useChrome: false })
-        } catch (e) {
-          console.log("error")
-        }
-          finally{((client) => {
-            console.log(client)
-            clientd[req.body.user_id + "-" + req.body.acc_id] = client;
+          { headless: true, useChrome: true })
+      } catch (e) {
+        console.log("error")
+      }
+      finally {
+        ((client) => {
+          console.log(client)
+          clientd[req.body.user_id + "-" + req.body.acc_id] = client;
 
-            console.log(clientd)
+          console.log(clientd)
 
-            clientbot(client)
-          })}
-      
+          clientbot(client)
+        })
+      }
+
 
     })
 
@@ -267,17 +269,17 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
 
     })
     app.post('/:id/deletebot', (req, res) => {
-      console.log("yes:"+req.params.id);
-    
+      console.log("yes:" + req.params.id);
+
       try {
-        bot_db.findOneAndDelete({_id: new ObjectID(req.body.id.trim())});
-       
-      
+        bot_db.findOneAndDelete({ _id: new ObjectID(req.body.id.trim()) });
+
+
       }
       catch (e) {
         console.log("error")
       }
-      
+
     })
 
     app.get("/:id/dashboard", async (req, res) => {
@@ -458,7 +460,7 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
       res.end();
     })
 
-    app.post("/send",  async(req, res) => {
+    app.post("/send", async (req, res) => {
       res.redirect("/" + req.body["user-id"] + "/report")
       console.log(req.body.acc_i)
       var acc_sel = req.body.acc_i.split(",");
@@ -489,16 +491,16 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
 
           if (number1[0] != null) {
 
-          check_send((req.body["user-id"] + "-" + acc_sel[j]), "91" + fin_num + "@c.us", message, req.body["user-id"], req.body.campaign, false)
+            check_send((req.body["user-id"] + "-" + acc_sel[j]), "91" + fin_num + "@c.us", message, req.body["user-id"], req.body.campaign, false)
             console.log((req.body["user-id"] + "-" + acc_sel[j]))
           }
 
         }
-       await sleep(req.body.buffertime * 1000)
+        await sleep(req.body.buffertime * 1000)
         delaygroup++;
         if (delaygroup == req.body.delaygrouptotal) {
           delaygroup = 0;
-        await  sleep(req.body.groupdelaytime * 1000)
+          await sleep(req.body.groupdelaytime * 1000)
         }
 
       }
@@ -513,7 +515,7 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
 
     async function clientbot(client) {
 
-      
+
       client.onMessage((message) => {
         let check = false;
         console.log(message.to.split("@")[0])
@@ -528,7 +530,7 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
                 console.log(result)
                 result.forEach(val => {
                   if (message.body === val.request && message.isGroupMsg === false) {
-                    check_send(client, message.from, val.response, data.id, "Auto-reply",true)
+                    check_send(client, message.from, val.response, data.id, "Auto-reply", true)
                     check = true;
 
                   }
@@ -536,7 +538,7 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
                 if (check == false) {
                   result.forEach(val => {
                     if ("default" === val.request && message.isGroupMsg === false) {
-                      check_send(client, message.from, val.response, data.id, "Auto-reply",true)
+                      check_send(client, message.from, val.response, data.id, "Auto-reply", true)
                       check = true;
 
                     }
@@ -558,67 +560,48 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
 
     }
 
-   async function initiat() {
-      account_db.find({status:'Yes'}).toArray(async function (err, result) {
+    async function initiat() {
+      account_db.find({ status: 'Yes' }).toArray(async function (err, result) {
         if (err) { console.log("errror") }
         else {
           console.log(result)
-          try{
-            result.forEach(  async function(data){
+          try {
+            result.forEach(async function (data) {
               try {
-                await venom.create(data.id + "-" + data["_id"])
+                await venom.create(data.id + "-" + data["_id"],(base64Qrimg, asciiQR, attempts, urlCode)=> {},   (statusSession, session) =>{},{   autoClose: 60000,}).then (client => {
+                  clientd[data.id + "-" + data["_id"]] = client; clientbot(client);
+
+                })
               } catch (error) {
-                console.log("error1") ;
+                console.log(data);
+                account_db.findOneAndUpdate({ _id: new ObjectID(data["_id"]) }, { $set: { status: "No"} }, { upsert: true })
+                .then(result => {
+                  console.log(result);
+  
+  
+                })
               }
-             finally{(client => {
-                     clientd[data.id + "-" + data["_id"]] = client; clientbot(client);
-       
-                   });}
-       
-       
-                 })
-          }catch{
+              
+
+
+            })
+          } catch {
             console.log("error")
-          }finally{app.listen(8000);console.log("done")}
-     
-        
+          } finally { app.listen(8000); console.log("done") }
+
+
         }
       })
     }
-   initiat();
-   function check_send(client, to, text, id, campaign,bot) {
-      if(bot==true)
-      {   collect.find({ _id: new ObjectID(id) }).toArray(async function (err, result) {
-        if (err) throw err;
-        console.log(result[0].credit)
-        if (result[0].credit > 0) {
-    
-        client.sendText(to,text).then((result1)=>
-        {
-          session.file = result1;
-              // console.log('Result: ', result1); //return object success
-              collect.findOneAndUpdate({ _id: new ObjectID(id) }, { $set: { credit: result[0].credit - 1 } }, { upsert: true })
-              reports.insertOne({ clientid: id, time: new Date(), sendto: to.split("@")[0], status: result1.status, campaign })
-                .then(result4 => {
-                  console.log(result4);
+    initiat();
+    function check_send(client, to, text, id, campaign, bot) {
+      if (bot == true) {
+        collect.find({ _id: new ObjectID(id) }).toArray(async function (err, result) {
+          if (err) throw err;
+          console.log(result[0].credit)
+          if (result[0].credit > 0) {
 
-
-                })
-                .catch(error => console.error(error))
-        });
-      }})
-      }else
-      {
-        console.log(client)
-      session.file = {};
-      collect.find({ _id: new ObjectID(id) }).toArray(async function (err, result) {
-        if (err) throw err;
-        console.log(result[0].credit)
-        if (result[0].credit > 0) {
-          console.log()
-          if (clientd[client]) {
-            console.log("yes")
-            clientd[client].sendText(to, text).then((result1) => {
+            client.sendText(to, text).then((result1) => {
               session.file = result1;
               // console.log('Result: ', result1); //return object success
               collect.findOneAndUpdate({ _id: new ObjectID(id) }, { $set: { credit: result[0].credit - 1 } }, { upsert: true })
@@ -629,55 +612,79 @@ MongoClient.connect(dburl, { useUnifiedTopology: true })
 
                 })
                 .catch(error => console.error(error))
-            })
-              .catch((erro) => {
-                console.error('Error when sending: ', erro); //return object error
-              });
-
-
-          } else {
-            console.log("no"); const name = client
-            await venom.create(name).then((client1) => {
-              
-              clientd[client] = client1;
-              
-              client1.sendText(to, text).then((result1) => {
+            });
+          }
+        })
+      } else {
+        console.log(client)
+        session.file = {};
+        collect.find({ _id: new ObjectID(id) }).toArray(async function (err, result) {
+          if (err) throw err;
+          console.log(result[0].credit)
+          if (result[0].credit > 0) {
+            console.log()
+            if (clientd[client]) {
+              console.log("yes")
+              clientd[client].sendText(to, text).then((result1) => {
                 session.file = result1;
                 // console.log('Result: ', result1); //return object success
                 collect.findOneAndUpdate({ _id: new ObjectID(id) }, { $set: { credit: result[0].credit - 1 } }, { upsert: true })
                 reports.insertOne({ clientid: id, time: new Date(), sendto: to.split("@")[0], status: result1.status, campaign })
                   .then(result4 => {
                     console.log(result4);
-                  
+
 
                   })
-                  .catch(error => console.error(error));
-                  clientbot(client1);
+                  .catch(error => console.error(error))
               })
                 .catch((erro) => {
                   console.error('Error when sending: ', erro); //return object error
                 });
-                
-            })
-          }
+
+
+            } else {
+              console.log("no"); const name = client
+              await venom.create(name).then((client1) => {
+
+                clientd[client] = client1;
+
+                client1.sendText(to, text).then((result1) => {
+                  session.file = result1;
+                  // console.log('Result: ', result1); //return object success
+                  collect.findOneAndUpdate({ _id: new ObjectID(id) }, { $set: { credit: result[0].credit - 1 } }, { upsert: true })
+                  reports.insertOne({ clientid: id, time: new Date(), sendto: to.split("@")[0], status: result1.status, campaign })
+                    .then(result4 => {
+                      console.log(result4);
+
+
+                    })
+                    .catch(error => console.error(error));
+                  clientbot(client1);
+                })
+                  .catch((erro) => {
+                    console.error('Error when sending: ', erro); //return object error
+                  });
+
+              })
+            }
 
 
 
-          console.log(session.file.status)
-          if (session.file.status == "OK") {
-            return (true);
+            console.log(session.file.status)
+            if (session.file.status == "OK") {
+              return (true);
+            }
+            else {
+              return (false)
+            }
+
           }
           else {
-            return (false)
+            return ("no-credit");// redirect to payment
           }
-
-        }
-        else {
-          return ("no-credit");// redirect to payment
-        }
-      })
+        })
       }
-      
+
 
 
     }
